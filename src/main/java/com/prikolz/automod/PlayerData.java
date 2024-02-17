@@ -111,7 +111,7 @@ public class PlayerData {
                         ad.time.clear();
                     }
                 }
-                ad.time.add(time);
+                if(!isViolation) ad.time.add(time);
                 ADs.put(adID, ad);
                 System.out.println(format + " \uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/3");
 
