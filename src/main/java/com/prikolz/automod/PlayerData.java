@@ -1,5 +1,9 @@
 package com.prikolz.automod;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +78,13 @@ public class PlayerData {
         cut = newMsg;
         int index = cut.indexOf("/join ");
         List<String> buffer = new ArrayList<>();
+
+        Instant instant = Instant.ofEpochSecond(time / 1000);
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String format = "[" + zonedDateTime.format(formatter) + "]";
+
         while(index != -1) {
             cut = cut.substring(index + 6);
             space = cut.indexOf(" ");
@@ -102,12 +113,12 @@ public class PlayerData {
                 }
                 ad.time.add(time);
                 ADs.put(adID, ad);
-                System.out.println("\uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/3");
+                System.out.println(format + " \uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/3");
 
             }else {
                 AD ad = new AD(time);
                 ADs.put(adID, ad);
-                System.out.println("\uD83D\uDC41 AD| + " + adID + " | 1/3");
+                System.out.println(format + " \uD83D\uDC41 AD| + " + adID + " | 1/3");
             }
             index = cut.indexOf("/join ");
         }
