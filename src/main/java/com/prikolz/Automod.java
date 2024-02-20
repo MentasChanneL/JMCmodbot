@@ -113,6 +113,16 @@ public class Automod {
                         new BitSet()
                 )
         );
+        command = "msg " + name + " Вы были автоматически заглушенны ботом ᴀᴜᴛᴏᴍᴏᴅ! Причина: " + reason + ". Подробнее об этом пункте правил, вы можете прочитать в /rules. Если ваш мут - это ошибка, то сообщите другому модератору, саппорту или в дискорд @2m3v!";
+        client.send(new ServerboundChatCommandPacket(
+                        command,
+                        System.currentTimeMillis(),
+                        0L,
+                        signs,
+                        0,
+                        new BitSet()
+                )
+        );
         writeJson();
     }
 
