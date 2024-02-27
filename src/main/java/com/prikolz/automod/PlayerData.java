@@ -104,7 +104,7 @@ public class PlayerData {
                     }else {
                         ad.time.remove(t);
                     }
-                    if(counter > 1) {
+                    if(counter > 2) {
                         isViolation = true;
                         violationMsg = "2.3 Спам";
                         violationInstantMinutes = 15;
