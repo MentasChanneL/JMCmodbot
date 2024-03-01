@@ -13,6 +13,9 @@ import java.net.URL;
 import java.util.*;
 
 public class LSHandler {
+
+    public static long prikolcd = 0;
+
     public static void analys(String msg) {
         DisplayNick displayNick = new DisplayNick();
         displayNick.fromPrivateMessage(msg);
@@ -21,20 +24,36 @@ public class LSHandler {
             sayPrikol(displayNick);
             return;
         }
-        run.client.session.send(new ServerboundChatPacket(
-                Arrays.asList("че", "что", "чего", "каво", "чо", "не пон").get(new Random().nextInt(5)),
-                System.currentTimeMillis(),
-                0L,
-                null,
-                0,
-                new BitSet()
 
-        ));
+        List<ArgumentSignature> signs = new ArrayList<>();
+        run.client.session.send(new ServerboundChatCommandPacket(
+                        "msg " + displayNick.name + " " + Arrays.asList("че", "что", "чего", "каво", "чо", "не пон").get(new Random().nextInt(5)),
+                        System.currentTimeMillis(),
+                        0L,
+                        signs,
+                        0,
+                        new BitSet()
+                )
+        );
 
     }
 
     private static void sayPrikol(DisplayNick displayNick) {
+        List<ArgumentSignature> signs = new ArrayList<>();
+        if(System.currentTimeMillis() < prikolcd) {
+            run.client.session.send(new ServerboundChatCommandPacket(
+                            "msg " + displayNick.name + " я еще не придумал анектод",
+                            System.currentTimeMillis(),
+                            0L,
+                            signs,
+                            0,
+                            new BitSet()
+                    )
+            );
+            return;
+        }
         try {
+            prikolcd = System.currentTimeMillis() + 1000;
             URL url = new URL("https://randstuff.ru/joke/");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -51,8 +70,6 @@ public class LSHandler {
 
             line = content.substring(content.indexOf("id=\"joke\"><table class=\"text\"><tr><td>"));
             line = line.substring( line.indexOf("<td>") + 4, line.indexOf("</td>") );
-
-            List<ArgumentSignature> signs = new ArrayList<>();
 
             run.client.session.send(new ServerboundChatCommandPacket(
                     "msg " + displayNick.name + " ☻ " + line + " ☻",
