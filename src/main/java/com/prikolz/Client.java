@@ -40,7 +40,7 @@ public class Client {
                 if (packet instanceof ClientboundLoginPacket) {
                     System.out.println("Login");
                     session.send(new ServerboundChatPacket(
-                            "ᴀᴜᴛᴏᴍᴏᴅ v240301. Лимиты: 3 рекламы в 30 минут, 2 одинаковых сообщения, 0 австрийских символов, обзываться - нельзя. ЛС Команды: @анекдот",
+                            "ᴀᴜᴛᴏᴍᴏᴅ v240301. Лимиты: 3 рекламы в 30 минут, 2 одинаковых сообщения, 0 австрийских символов, обзываться - нельзя. ЛС Команды: анекдот",
                             System.currentTimeMillis(),
                             0L,
                             null,

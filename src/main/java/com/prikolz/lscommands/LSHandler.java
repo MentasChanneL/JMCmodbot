@@ -20,14 +20,14 @@ public class LSHandler {
         DisplayNick displayNick = new DisplayNick();
         displayNick.fromPrivateMessage(msg);
         String command = displayNick.message.toLowerCase();
-        if(command.equals("@анекдот"))  {
+        if(command.equals("анекдот"))  {
             sayPrikol(displayNick);
             return;
         }
 
         List<ArgumentSignature> signs = new ArrayList<>();
         run.client.session.send(new ServerboundChatCommandPacket(
-                        "msg " + displayNick.name + " " + Arrays.asList("че", "что", "чего", "каво", "чо", "не пон").get(new Random().nextInt(5)),
+                        "msg " + displayNick.name + " " + Arrays.asList("че", "что", "чего", "каво", "чо", "не пон", "всм", "?").get(new Random().nextInt(8)),
                         System.currentTimeMillis(),
                         0L,
                         signs,
@@ -41,15 +41,6 @@ public class LSHandler {
     private static void sayPrikol(DisplayNick displayNick) {
         List<ArgumentSignature> signs = new ArrayList<>();
         if(System.currentTimeMillis() < prikolcd) {
-            run.client.session.send(new ServerboundChatCommandPacket(
-                            "msg " + displayNick.name + " я еще не придумал анектод",
-                            System.currentTimeMillis(),
-                            0L,
-                            signs,
-                            0,
-                            new BitSet()
-                    )
-            );
             return;
         }
         try {
