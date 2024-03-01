@@ -38,24 +38,24 @@ public class Client {
 
                 if (packet instanceof ClientboundLoginPacket) {
                     System.out.println("Login");
-                    session.send(new ServerboundChatPacket(
-                            "ᴀᴜᴛᴏᴍᴏᴅ v240227. Лимиты: 3 рекламы в 30 минут, 2 одинаковых сообщения, 0 вентиляторов, мат - не желателен. ЛС Команды: null",
-                            System.currentTimeMillis(),
-                            0L,
-                            null,
-                            0,
-                            new BitSet()
-
-                    ));
-                    session.send(new ServerboundChatPacket(
-                            "бип бип боп",
-                            System.currentTimeMillis() + 2000,
-                            0L,
-                            null,
-                            0,
-                            new BitSet()
-
-                    ));
+                    //session.send(new ServerboundChatPacket(
+                    //        "ᴀᴜᴛᴏᴍᴏᴅ v240227. Лимиты: 3 рекламы в 30 минут, 2 одинаковых сообщения, 0 вентиляторов, мат - не желателен. ЛС Команды: null",
+                    //        System.currentTimeMillis(),
+                    //        0L,
+                    //        null,
+                    //        0,
+                    //        new BitSet()
+//
+                    //));
+                    //session.send(new ServerboundChatPacket(
+                    //        "бип бип боп",
+                    //        System.currentTimeMillis() + 2000,
+                    //        0L,
+                    //        null,
+                    //        0,
+                    //        new BitSet()
+//
+                    //));
                     return;
                 }
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PlayerData {
     public HashMap<String, AD> ADs;
-    public HashMap<String, Long> lastMessages;
+    public List<FludeCharacter> fludSameCharacters;
     public boolean isViolation;
     public String violationMsg;
     public int violationInstantMinutes;
@@ -21,7 +21,7 @@ public class PlayerData {
         violationMsg = "";
         ADs = new HashMap<>();
         badWords = new HashMap<>();
-        lastMessages = new HashMap<>();
+        fludSameCharacters = new ArrayList<>();
         setBadWords();
     }
 
@@ -67,9 +67,18 @@ public class PlayerData {
             checkSpam(newMsg);
             return;
         }
-        if(lastMessages.size() > 1) checkFlood( " " + newMsg.toLowerCase() + " ");
-        lastMessages.put(" " + newMsg.toLowerCase() + " ", System.currentTimeMillis());
-        if(lastMessages.size() > 2) lastMessages.remove( lastMessages.keySet().stream().toList().getFirst() );
+        writeToCharacterFludDetector(newMsg);
+    }
+
+    private void writeToCharacterFludDetector(String msg){
+        FludeCharacter current = FludeCheck.getMaxFludeCharacter( FludeCheck.analysSymvolCounter(msg) );
+        current.time = System.currentTimeMillis();
+        current.power = (int)( ((double) current.power / msg.length()) * 100 );
+        fludSameCharacters.add(current);
+        if(fludSameCharacters.size() > 2) {
+            checkCharacterFlood();
+            fludSameCharacters.removeFirst();
+        }
     }
 
     public void checkSpam(String newMsg) {
@@ -136,31 +145,25 @@ public class PlayerData {
         }
     }
 
-    public void checkFlood(String newMsg) {
+    public void checkCharacterFlood() {
+
         long i = 0;
-        for (long time : lastMessages.values()) {
+        for(FludeCharacter f : fludSameCharacters) {
             if(i == 0) {
-                i = time;
+                i = f.time;
                 continue;
             }
-            if(time - i > 300000) return;
+            if(f.time - i > 420000) return;
         }
 
-        String first = lastMessages.keySet().stream().toList().getFirst();
-        String second = lastMessages.keySet().stream().toList().get(1);
-        if(first.contains(newMsg) && second.contains(newMsg)) {
-            isViolation = true;
-            violationMsg = "2.3 Флуд";
-            violationInstantMinutes = 10;
-            return;
-        }
-        if(newMsg.contains(first) && second.contains(first)) {
-            isViolation = true;
-            violationMsg = "2.3 Флуд";
-            violationInstantMinutes = 10;
-            return;
-        }
-        if(newMsg.contains(second) && first.contains(second)) {
+        FludeCharacter first = fludSameCharacters.getFirst();
+        FludeCharacter second = fludSameCharacters.get(1);
+        FludeCharacter current = fludSameCharacters.get(2);
+
+        if(first.character != second.character || second.character != current.character) return;
+        int general = first.power + second.power + current.power;
+
+        if(general > 150) {
             isViolation = true;
             violationMsg = "2.3 Флуд";
             violationInstantMinutes = 10;
