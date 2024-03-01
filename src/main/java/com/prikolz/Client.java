@@ -14,6 +14,7 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpClientSession;
+import com.prikolz.lscommands.LSHandler;
 import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -39,7 +40,7 @@ public class Client {
                 if (packet instanceof ClientboundLoginPacket) {
                     System.out.println("Login");
                     //session.send(new ServerboundChatPacket(
-                    //        "ᴀᴜᴛᴏᴍᴏᴅ v240227. Лимиты: 3 рекламы в 30 минут, 2 одинаковых сообщения, 0 вентиляторов, мат - не желателен. ЛС Команды: null",
+                    //        "ᴀᴜᴛᴏᴍᴏᴅ v240301. Лимиты: 3 рекламы в 30 минут, 2 одинаковых сообщения, 0 австрийских символов, обзываться - нельзя. ЛС Команды: @анекдот",
                     //        System.currentTimeMillis(),
                     //        0L,
                     //        null,
@@ -64,6 +65,9 @@ public class Client {
                     System.out.println( ANSIComponentSerializer.ansi().serialize(pm.getContent()) );
                     if(message.startsWith("[!]")) {
                         automod.mod(message);
+                    }
+                    if(message.startsWith("(") && !(message.startsWith("(Ты"))) {
+                        LSHandler.analys(message);
                     }
                     return;
                 }

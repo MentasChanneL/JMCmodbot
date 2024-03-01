@@ -17,45 +17,19 @@ public class Automod {
     Session client;
     HashMap<String, PlayerData> data;
     HashMap<String, Integer> violations;
-    final List<String> role;
 
     public Automod(Session client){
         this.client = client;
         data = new HashMap<>();
         violations = new HashMap<>();
-        role = new ArrayList<>();
-        role.add("Admin");
-        role.add("Mod");
-        role.add("Dev");
-        role.add("Support");
-        role.add("Nova");
-        role.add("Galaxy");
-        role.add("Star");
-        role.add("Planet");
-        role.add("Moon");
-        role.add("Meteor");
         parseJson();
     }
 
     public void mod(String message) {
-        String name = "*";
-        String[] args = message.split(":");
-        String[] info = args[0].split(" ");
-        if(info.length == 2) {
-            name = info[1];
-        }
-        if(info.length == 3) {
-            if(role.contains(info[1])) {
-                name = info[2];
-            }else {
-                name = info[1];
-            }
-        }
-        if(info.length == 4) {
-            name = info[2];
-        }
-
-        if(name.equals("*")) return;
+        DisplayNick displayNick = new DisplayNick();
+        displayNick.fromGlobalMessage(message);
+        String name = displayNick.name;
+        if(name.isEmpty()) return;
 
         String msg = message.substring(message.indexOf(":") + 1);
 
