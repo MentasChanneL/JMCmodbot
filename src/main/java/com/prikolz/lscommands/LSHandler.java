@@ -24,22 +24,18 @@ public class LSHandler {
             sayPrikol(displayNick);
             return;
         }
+        if(command.equals("команды"))  {
+            say(displayNick.name, "Список команд: анекдот, команды");
+            return;
+        }
 
-        List<ArgumentSignature> signs = new ArrayList<>();
-        run.client.session.send(new ServerboundChatCommandPacket(
-                        "msg " + displayNick.name + " " + Arrays.asList("че", "что", "чего", "каво", "чо", "не пон", "всм", "?").get(new Random().nextInt(8)),
-                        System.currentTimeMillis(),
-                        0L,
-                        signs,
-                        0,
-                        new BitSet()
-                )
-        );
+        List<String> what = Arrays.asList("че", "что", "чего", "каво", "м?", "не пон", "всм", "?");
+
+        say( displayNick.name, what.get( new Random().nextInt(what.size()) ) + " | Список команд: команды" );
 
     }
 
     private static void sayPrikol(DisplayNick displayNick) {
-        List<ArgumentSignature> signs = new ArrayList<>();
         if(System.currentTimeMillis() < prikolcd) {
             return;
         }
@@ -62,19 +58,24 @@ public class LSHandler {
             line = content.substring(content.indexOf("id=\"joke\"><table class=\"text\"><tr><td>"));
             line = line.substring( line.indexOf("<td>") + 4, line.indexOf("</td>") );
 
-            run.client.session.send(new ServerboundChatCommandPacket(
-                    "msg " + displayNick.name + " ☻ " + line + " ☻",
-                            System.currentTimeMillis(),
-                            0L,
-                            signs,
-                            0,
-                            new BitSet()
-                    )
-            );
+            say(displayNick.name, "☻ " + line + " ☻");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void say(String getter, String content) {
+        List<ArgumentSignature> signs = new ArrayList<>();
+        run.client.session.send(new ServerboundChatCommandPacket(
+                        "msg " + getter + " " + content,
+                        System.currentTimeMillis(),
+                        0L,
+                        signs,
+                        0,
+                        new BitSet()
+                )
+        );
     }
 
 }
