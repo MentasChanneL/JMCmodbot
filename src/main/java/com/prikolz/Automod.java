@@ -44,7 +44,7 @@ public class Automod {
         messages.analyseMessage(msg);
         if(messages.isViolation) {
             messages.isViolation = false;
-            mute(name, messages.violationMsg, messages.violationInstantMinutes);
+            mute(name, messages.violationMsg, messages.violationInstantMinutes, true);
         }
         this.data.put(name, messages);
     }
@@ -70,7 +70,7 @@ public class Automod {
 
     }
 
-    public void mute(String name, String reason, int instanceMinutes) {
+    public void mute(String name, String reason, int instanceMinutes, boolean pardon) {
         int v = 0;
         if(!(violations.containsKey(name))) {
             violations.put(name, 1);
@@ -91,16 +91,19 @@ public class Automod {
                         new BitSet()
                 )
         );
-        command = "msg " + name + " Вы были автоматически заглушенны ботом ᴀᴜᴛᴏᴍᴏᴅ! Причина: " + reason + ". Подробнее об этом пункте правил, вы можете прочитать в /rules. Если ваш мут - это ошибка, то сообщите другому модератору, саппорту или в дискорд @2m3v!";
-        client.send(new ServerboundChatCommandPacket(
-                        command,
-                        System.currentTimeMillis(),
-                        0L,
-                        signs,
-                        0,
-                        new BitSet()
-                )
-        );
+        if(pardon) {
+            command = "msg " + name + " Вы были автоматически заглушенны ботом ᴀᴜᴛᴏᴍᴏᴅ! Причина: " + reason + ". Подробнее об этом пункте правил, вы можете прочитать в /rules. Если ваш мут - это ошибка, то сообщите другому модератору, саппорту или в дискорд @2m3v!";
+            client.send(new ServerboundChatCommandPacket(
+                            command,
+                            System.currentTimeMillis(),
+                            0L,
+                            signs,
+                            0,
+                            new BitSet()
+                    )
+            );
+        }
+
         writeJson();
     }
 
@@ -131,7 +134,7 @@ public class Automod {
         }
         if(bot.counter > 4) {
             for(String victim : bot.targets) {
-                mute(victim, "2.3 Организованный флуд", 360);
+                mute(victim, "2.3 Организованный флуд", 360, false);
             }
             botChecker.remove(msg);
         }
