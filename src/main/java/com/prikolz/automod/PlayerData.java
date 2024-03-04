@@ -61,6 +61,7 @@ public class PlayerData {
     }
 
     public void analyseMessage(String newMsg) {
+
         checkBadWords(" " + newMsg + " ");
         if(isViolation) return;
         if(newMsg.contains("/join ")) {

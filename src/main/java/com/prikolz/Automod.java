@@ -3,6 +3,7 @@ package com.prikolz;
 import com.github.steveice10.mc.protocol.data.game.ArgumentSignature;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
 import com.github.steveice10.packetlib.Session;
+import com.prikolz.automod.BotChecker;
 import com.prikolz.automod.PlayerData;
 import org.json.JSONObject;
 
@@ -17,11 +18,13 @@ public class Automod {
     Session client;
     HashMap<String, PlayerData> data;
     HashMap<String, Integer> violations;
+    HashMap<String, BotChecker> botChecker;
 
     public Automod(Session client){
         this.client = client;
         data = new HashMap<>();
         violations = new HashMap<>();
+        botChecker = new HashMap<>();
         parseJson();
     }
 
@@ -37,6 +40,7 @@ public class Automod {
         if(messages == null) {
             messages = new PlayerData();
         }
+        putBotChecker(msg, name);
         messages.analyseMessage(msg);
         if(messages.isViolation) {
             messages.isViolation = false;
@@ -107,6 +111,32 @@ public class Automod {
             System.out.println("Нарушения записаны в файл.");
         } catch (IOException e) {
             System.out.println( e.getMessage() );
+        }
+    }
+
+    public void putBotChecker(String msg, String author) {
+        BotChecker bot;
+        if(!(botChecker.containsKey(msg))) {
+            bot = new BotChecker();
+            bot.counter = 1;
+            bot.targets.add(author);
+            botChecker.put(msg, bot);
+            return;
+        }
+        bot = botChecker.get(msg);
+        bot.counter++;
+        bot.targets.add(author);
+        if(bot.counter > 2) {
+            System.out.println("⚠ Организация флуда | Счёт: " + bot.counter);
+        }
+        if(bot.counter > 4) {
+            for(String victim : bot.targets) {
+                mute(victim, "2.3 Организованный флуд", 360);
+            }
+            botChecker.remove(msg);
+        }
+        if(botChecker.size() > 50) {
+            botChecker.remove(botChecker.keySet().stream().toList().getFirst());
         }
     }
 
