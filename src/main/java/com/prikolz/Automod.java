@@ -133,6 +133,11 @@ public class Automod {
             System.out.println("⚠ Организация флуда | Счёт: " + bot.counter);
         }
         if(bot.counter > 4) {
+            if(bot.targets.size() < 3) {
+                botChecker.remove(msg);
+                System.out.println("⚠ Организация флуда не подтверждена | Цели: " + bot.targets.size());
+                return;
+            }
             for(String victim : bot.targets) {
                 mute(victim, "2.3 Организованный флуд", 360, false);
             }
