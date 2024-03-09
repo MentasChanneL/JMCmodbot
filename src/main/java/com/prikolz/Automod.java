@@ -122,24 +122,19 @@ public class Automod {
         if(!(botChecker.containsKey(msg))) {
             bot = new BotChecker();
             bot.counter = 1;
-            bot.targets.add(author);
+            bot.addTarget(author);
             botChecker.put(msg, bot);
             return;
         }
         bot = botChecker.get(msg);
         bot.counter++;
-        bot.targets.add(author);
+        bot.addTarget(author);
         if(bot.counter > 2) {
             System.out.println("⚠ Организация флуда | Счёт: " + bot.counter);
         }
-        if(bot.counter > 4) {
-            if(bot.targets.size() < 3) {
-                botChecker.remove(msg);
-                System.out.println("⚠ Организация флуда не подтверждена | Цели: " + bot.targets.size());
-                return;
-            }
-            for(String victim : bot.targets) {
-                mute(victim, "2.3 Организованный флуд", 360, false);
+        if(bot.targets.size() > 4) {
+            for(String victim : bot.targets.keySet()) {
+                mute(victim, "2.3 Участие в флуде", 360, false);
             }
             botChecker.remove(msg);
         }
