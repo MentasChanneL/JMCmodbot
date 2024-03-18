@@ -27,26 +27,33 @@ public class PlayerData {
 
     private void setBadWords() {
         badWords.put("卐", new Badword("2.1 Неадекватное поведение", 10080));
+        badWords.put("卍", new Badword("Неадекватное поведение", 40));
         badWords.put(" пидор ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пидарас ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пидорас ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" гандон ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" пошел нахуй ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" пошол нахуй ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" пашел нахуй ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" пашёл нахуй ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" пошёл нахуй ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" иди нахуй ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пошел нахуй", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пошол нахуй", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пашел нахуй", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пашёл нахуй", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пошёл нахуй", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" иди наху", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбаеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбаёб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбоеб ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" далбаеб ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" далбоеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" даун ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" аутист ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" сын шлюхи ", new Badword("2.1 Неадекватное поведение", 240));
+        badWords.put(" сын шлюх", new Badword("2.1 Неадекватное поведение", 240));
+        badWords.put(" мать ебал", new Badword("2.1 Неадекватное поведение", 240));
+        badWords.put(" сиськ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put("секс", new Badword("2.7", 40));
-        badWords.put("порно", new Badword("2.7", 40));
+        badWords.put("порно ", new Badword("2.7", 40));
+        badWords.put("порн ", new Badword("2.7", 40));
+        badWords.put("порна ", new Badword("2.7", 40));
         badWords.put("порнушка", new Badword("2.7", 40));
-        badWords.put("сперма", new Badword("2.7", 40));
+        badWords.put("сперм", new Badword("2.7", 40));
         badWords.put("трах", new Badword("2.7", 40));
         badWords.put(" еблан", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" динаху", new Badword("2.1 Неадекватное поведение", 30));
@@ -58,6 +65,7 @@ public class PlayerData {
         badWords.put(" хуерык ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" уёбище ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" уебище ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" хуила ", new Badword("2.1 Неадекватное поведение", 40));
     }
 
     public void analyseMessage(String newMsg) {
@@ -109,12 +117,12 @@ public class PlayerData {
                 AD ad = ADs.get(adID);
                 int counter = 0;
                 for(long t : ad.time.stream().toList()) {
-                    if(time - t < 1800000) {
+                    if(time - t < 900000) {
                         counter++;
                     }else {
                         ad.time.remove(t);
                     }
-                    if(counter > 2) {
+                    if(counter > 1) {
                         isViolation = true;
                         violationMsg = "2.3 Спам";
                         violationInstantMinutes = 15;
@@ -123,12 +131,12 @@ public class PlayerData {
                 }
                 if(!isViolation) ad.time.add(time);
                 ADs.put(adID, ad);
-                System.out.println(format + " \uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/3");
+                System.out.println(format + " \uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/2");
 
             }else {
                 AD ad = new AD(time);
                 ADs.put(adID, ad);
-                System.out.println(format + " \uD83D\uDC41 AD| + " + adID + " | 1/3");
+                System.out.println(format + " \uD83D\uDC41 AD| + " + adID + " | 1/2");
             }
             index = cut.indexOf("/join ");
         }

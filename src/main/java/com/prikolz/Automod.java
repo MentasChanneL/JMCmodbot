@@ -19,12 +19,16 @@ public class Automod {
     HashMap<String, PlayerData> data;
     HashMap<String, Integer> violations;
     HashMap<String, BotChecker> botChecker;
+    List<String> commandBuffer;
+    boolean commandBufferActive;
 
     public Automod(Session client){
         this.client = client;
         data = new HashMap<>();
         violations = new HashMap<>();
         botChecker = new HashMap<>();
+        commandBuffer = new ArrayList<>();
+        commandBufferActive = false;
         parseJson();
     }
 
@@ -40,7 +44,7 @@ public class Automod {
         if(messages == null) {
             messages = new PlayerData();
         }
-        putBotChecker(msg, name);
+        putBotChecker(msg.toLowerCase(), name);
         messages.analyseMessage(msg);
         if(messages.isViolation) {
             messages.isViolation = false;
@@ -80,28 +84,12 @@ public class Automod {
         }
         int minutes = (int) (instanceMinutes * Math.pow(2, v));
         List<ArgumentSignature> signs = new ArrayList<>();
-        String command = "mute " + name + " " + minutes + "m [ ᴀᴜᴛᴏᴍᴏᴅ ] " + reason;
+        String command = "mute " + name + " " + minutes + "m [ᴀᴜᴛᴏᴍᴏᴅ] " + reason;
         System.out.println("⚠⚠⚠ Автоматический мут " + name + "! Команда: " + command);
-        client.send(new ServerboundChatCommandPacket(
-                        command,
-                        System.currentTimeMillis(),
-                        0L,
-                        signs,
-                        0,
-                        new BitSet()
-                )
-        );
+        sendCommand(command);
         if(pardon) {
             command = "msg " + name + " Вы были автоматически заглушенны ботом ᴀᴜᴛᴏᴍᴏᴅ! Причина: " + reason + ". Подробнее об этом пункте правил, вы можете прочитать в /rules. Если ваш мут - это ошибка, то сообщите другому модератору, саппорту или в дискорд @2m3v!";
-            client.send(new ServerboundChatCommandPacket(
-                            command,
-                            System.currentTimeMillis(),
-                            0L,
-                            signs,
-                            0,
-                            new BitSet()
-                    )
-            );
+            sendCommand(command);
         }
 
         writeJson();
@@ -130,16 +118,46 @@ public class Automod {
         bot.counter++;
         bot.addTarget(author);
         if(bot.counter > 2) {
-            System.out.println("⚠ Организация флуда | Счёт: " + bot.counter);
+            System.out.println("⚠ Флуд | Счёт: " + bot.counter);
         }
         if(bot.targets.size() > 4) {
             for(String victim : bot.targets.keySet()) {
-                mute(victim, "2.3 Участие в флуде", 360, false);
+                mute(victim, "2.3 Участие в флуде", 20, false);
             }
             botChecker.remove(msg);
         }
         if(botChecker.size() > 50) {
             botChecker.remove(botChecker.keySet().stream().toList().getFirst());
+        }
+    }
+
+    public void sendCommand(String command) {
+        this.commandBuffer.add(command);
+        if(!this.commandBufferActive) {
+            this.commandBufferActive = true;
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    String command = commandBuffer.getFirst();
+                    List<ArgumentSignature> signs = new ArrayList<>();
+                    System.out.println("Буфер команд: " + commandBuffer.size());
+                    client.send(new ServerboundChatCommandPacket(
+                                    command,
+                                    System.currentTimeMillis(),
+                                    0L,
+                                    signs,
+                                    0,
+                                    new BitSet()
+                            )
+                    );
+                    commandBuffer.removeFirst();
+                    if(commandBuffer.isEmpty()) {
+                        commandBufferActive = false;
+                        this.cancel();
+                    }
+                }
+            }, 0, 600);
         }
     }
 

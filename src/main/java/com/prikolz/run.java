@@ -129,6 +129,25 @@ public class run {
                 return;
             }
 
+            if(id.equals("dos")) {
+                if(args.length < 4) {
+                    System.out.println("Usage: >dos [name] [content] [count]");
+                    return;
+                }
+
+                int c = 1;
+                try{
+                    c = Integer.parseInt(args[3]);
+                }catch (Exception ignore){}
+
+                while (c > 1) {
+                    automod.sendCommand("msg " + args[1] + " " + args[2].replace("_", " "));
+                    c--;
+                }
+
+                return;
+            }
+
             System.out.println("Unknown console command");
 
             return;

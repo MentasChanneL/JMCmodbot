@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.Hash;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class BotChecker {
@@ -16,13 +17,13 @@ public class BotChecker {
     }
 
     public void addTarget(String nick){
-        for(String i : this.targets.keySet()) {
+        for(String i : new HashSet<>( this.targets.keySet() )) {
             long time = targets.get(i);
             if(time < System.currentTimeMillis()) {
                 this.targets.remove(i);
             }
         }
-        this.targets.put(nick, System.currentTimeMillis() + 120000);
+        this.targets.put(nick, System.currentTimeMillis() + 30000);
     }
 
 }

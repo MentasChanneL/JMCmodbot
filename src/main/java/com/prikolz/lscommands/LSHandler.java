@@ -28,8 +28,16 @@ public class LSHandler {
             say(displayNick.name, "Список команд: анекдот, команды");
             return;
         }
+        if(command.equals("репис"))  {
+            say(displayNick.name, "пепис");
+            return;
+        }
+        if(command.equals("пепис"))  {
+            say(displayNick.name, "репис");
+            return;
+        }
 
-        List<String> what = Arrays.asList("че", "что", "чего", "каво", "м?", "не пон", "всм", "?");
+        List<String> what = Arrays.asList("че", "что", "чего", "каво", "м?", "не пон", "всм", "я бот");
 
         say( displayNick.name, what.get( new Random().nextInt(what.size()) ) + " | Список команд: команды" );
 
@@ -66,16 +74,7 @@ public class LSHandler {
     }
 
     private static void say(String getter, String content) {
-        List<ArgumentSignature> signs = new ArrayList<>();
-        run.client.session.send(new ServerboundChatCommandPacket(
-                        "msg " + getter + " " + content,
-                        System.currentTimeMillis(),
-                        0L,
-                        signs,
-                        0,
-                        new BitSet()
-                )
-        );
+        run.automod.sendCommand("msg " + getter + " " + content);
     }
 
 }
