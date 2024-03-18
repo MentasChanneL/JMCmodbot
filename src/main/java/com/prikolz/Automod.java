@@ -21,6 +21,7 @@ public class Automod {
     HashMap<String, BotChecker> botChecker;
     List<String> commandBuffer;
     boolean commandBufferActive;
+    long commandBufferCD;
 
     public Automod(Session client){
         this.client = client;
@@ -29,6 +30,7 @@ public class Automod {
         botChecker = new HashMap<>();
         commandBuffer = new ArrayList<>();
         commandBufferActive = false;
+        commandBufferCD = 0;
         parseJson();
     }
 
@@ -39,6 +41,8 @@ public class Automod {
         if(name.isEmpty()) return;
 
         String msg = message.substring(message.indexOf(":") + 1);
+
+        sendCommand("msg " + name + " Вы написали в глобальный чат:" + msg + ". Я заполнмнил это, чтобы использовать ваши сообщения в контр-аргументе против вас-же. Просмотреть свои сообщения можно через команду: анектод");
 
         PlayerData messages = this.data.get(name);
         if(messages == null) {
@@ -83,7 +87,6 @@ public class Automod {
             violations.put(name, v + 1);
         }
         int minutes = (int) (instanceMinutes * Math.pow(2, v));
-        List<ArgumentSignature> signs = new ArrayList<>();
         String command = "mute " + name + " " + minutes + "m [ᴀᴜᴛᴏᴍᴏᴅ] " + reason;
         System.out.println("⚠⚠⚠ Автоматический мут " + name + "! Команда: " + command);
         sendCommand(command);
@@ -132,13 +135,18 @@ public class Automod {
     }
 
     public void sendCommand(String command) {
-        this.commandBuffer.add(command);
+        if(command.length() > 127) {
+            this.commandBuffer.add(command.substring(0, 128));
+        }else {
+            this.commandBuffer.add(command);
+        }
         if(!this.commandBufferActive) {
             this.commandBufferActive = true;
             Timer timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
+                    if(commandBufferCD > System.currentTimeMillis()) return;
                     String command = commandBuffer.getFirst();
                     List<ArgumentSignature> signs = new ArrayList<>();
                     System.out.println("Буфер команд: " + commandBuffer.size());
@@ -156,8 +164,9 @@ public class Automod {
                         commandBufferActive = false;
                         this.cancel();
                     }
+                    commandBufferCD = System.currentTimeMillis() + 600;
                 }
-            }, 0, 600);
+            }, 0, 700);
         }
     }
 

@@ -37,9 +37,9 @@ public class LSHandler {
             return;
         }
 
-        List<String> what = Arrays.asList("че", "что", "чего", "каво", "м?", "не пон", "всм", "я бот");
+        List<String> what = Arrays.asList("понял", "что", "чего", "каво", "ладно", "не пон", "всм", "я бот", "окей", "нет", "круто");
 
-        say( displayNick.name, what.get( new Random().nextInt(what.size()) ) + " | Список команд: команды" );
+        say( displayNick.name, what.get( new Random().nextInt(what.size()) ));
 
     }
 
