@@ -17,4 +17,8 @@ public class FludeCharacter {
         this.time = time;
     }
 
+    @Override
+    public String toString() {
+        return "char = " + character + " power = " + power + " time = " + time;
+    }
 }

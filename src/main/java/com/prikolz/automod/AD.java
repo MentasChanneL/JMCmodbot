@@ -11,4 +11,8 @@ public class AD {
         this.time.add(time);
     }
 
+    @Override
+    public String toString() {
+        return "times =" + time;
+    }
 }

@@ -42,7 +42,7 @@ public class Automod {
 
         String msg = message.substring(message.indexOf(":") + 1);
 
-        sendCommand("msg " + name + " Вы написали в глобальный чат:" + msg + ". Я заполнмнил это, чтобы использовать ваши сообщения в контр-аргументе против вас-же. Просмотреть свои сообщения можно через команду: анектод");
+        //sendCommand("msg " + name + " Вы написали в глобальный чат:" + msg + ". Я заполнмнил это, чтобы использовать ваши сообщения в контр-аргументе против вас-же. Просмотреть свои сообщения можно через команду: анектод");
 
         PlayerData messages = this.data.get(name);
         if(messages == null) {
@@ -135,8 +135,8 @@ public class Automod {
     }
 
     public void sendCommand(String command) {
-        if(command.length() > 127) {
-            this.commandBuffer.add(command.substring(0, 128));
+        if(command.length() > 255) {
+            this.commandBuffer.add(command.substring(0, 256));
         }else {
             this.commandBuffer.add(command);
         }
@@ -149,7 +149,7 @@ public class Automod {
                     if(commandBufferCD > System.currentTimeMillis()) return;
                     String command = commandBuffer.getFirst();
                     List<ArgumentSignature> signs = new ArrayList<>();
-                    System.out.println("Буфер команд: " + commandBuffer.size());
+                    if(commandBuffer.size() > 1) System.out.println("Буфер команд: " + commandBuffer.size());
                     client.send(new ServerboundChatCommandPacket(
                                     command,
                                     System.currentTimeMillis(),

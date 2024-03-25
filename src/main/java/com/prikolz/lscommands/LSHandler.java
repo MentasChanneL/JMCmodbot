@@ -1,8 +1,5 @@
 package com.prikolz.lscommands;
 
-import com.github.steveice10.mc.protocol.data.game.ArgumentSignature;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import com.prikolz.DisplayNick;
 import com.prikolz.run;
 
@@ -37,7 +34,7 @@ public class LSHandler {
             return;
         }
 
-        List<String> what = Arrays.asList("понял", "что", "чего", "каво", "ладно", "не пон", "всм", "я бот", "окей", "нет", "круто");
+        List<String> what = Arrays.asList("понял", "что", "чего", "каво", "ладно", "не пон", "всм", "я бот", "окей", "нет", "круто", "ихихи");
 
         say( displayNick.name, what.get( new Random().nextInt(what.size()) ));
 

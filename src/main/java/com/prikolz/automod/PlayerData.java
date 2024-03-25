@@ -15,6 +15,7 @@ public class PlayerData {
     public String violationMsg;
     public int violationInstantMinutes;
     public static HashMap<String, Badword> badWords;
+    public HashMap<String, SameMessages> sameMessages;
 
     public PlayerData() {
         isViolation = false;
@@ -22,12 +23,18 @@ public class PlayerData {
         ADs = new HashMap<>();
         badWords = new HashMap<>();
         fludSameCharacters = new ArrayList<>();
+        sameMessages = new HashMap<>();
         setBadWords();
+    }
+
+    @Override
+    public String toString() {
+        return "ADs = " + ADs + "\nCharacter flude = " + fludSameCharacters + "\nSame messages = " + sameMessages;
     }
 
     private void setBadWords() {
         badWords.put("卐", new Badword("2.1 Неадекватное поведение", 10080));
-        badWords.put("卍", new Badword("Неадекватное поведение", 40));
+        badWords.put("卍", new Badword("2.1 Неадекватное поведение", 120));
         badWords.put(" пидор ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пидарас ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пидорас ", new Badword("2.1 Неадекватное поведение", 40));
@@ -37,24 +44,26 @@ public class PlayerData {
         badWords.put(" пашел нахуй", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пашёл нахуй", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пошёл нахуй", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put(" иди наху", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" иди нах", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбаеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбаёб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбоеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" далбаеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" далбоеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" даун ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" ты лох ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" аутист ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" сын шлюх", new Badword("2.1 Неадекватное поведение", 240));
         badWords.put(" мать ебал", new Badword("2.1 Неадекватное поведение", 240));
         badWords.put(" сиськ", new Badword("2.1 Неадекватное поведение", 40));
-        badWords.put("секс", new Badword("2.7", 40));
-        badWords.put("порно ", new Badword("2.7", 40));
-        badWords.put("порн ", new Badword("2.7", 40));
-        badWords.put("порна ", new Badword("2.7", 40));
-        badWords.put("порнушка", new Badword("2.7", 40));
-        badWords.put("сперм", new Badword("2.7", 40));
-        badWords.put("трах", new Badword("2.7", 40));
+        badWords.put(" секс", new Badword("2.7", 40));
+        badWords.put(" порно ", new Badword("2.7", 40));
+        badWords.put(" порн ", new Badword("2.7", 40));
+        badWords.put(" порна ", new Badword("2.7", 40));
+        badWords.put(" порнушка", new Badword("2.7", 40));
+        badWords.put(" сперм", new Badword("2.7", 40));
+        badWords.put(" трах", new Badword("2.7", 40));
+        badWords.put(" сum ", new Badword("2.7", 40));
         badWords.put(" еблан", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" динаху", new Badword("2.1 Неадекватное поведение", 30));
         badWords.put(" гомосек ", new Badword("2.1 Неадекватное поведение", 30));
@@ -66,17 +75,49 @@ public class PlayerData {
         badWords.put(" уёбище ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" уебище ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" хуила ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" дал в рот мат", new Badword("2.1 Неадекватное поведение", 240));
+        badWords.put("mс.minеlаnd", new Badword("2.2 Реклама сторонних проектов", 120));
+        badWords.put("minеlаnd.nеt", new Badword("2.2 Реклама сторонних проектов", 120));
     }
 
     public void analyseMessage(String newMsg) {
-
         checkBadWords(" " + newMsg + " ");
         if(isViolation) return;
         if(newMsg.contains("/join ")) {
             checkSpam(newMsg);
             return;
         }
+        checkSameMessages(makeSimple(newMsg));
         writeToCharacterFludDetector(newMsg);
+    }
+
+    private String makeSimple(String text) {
+        String result = text.toLowerCase();
+        result = result.replaceAll("a", "а");
+        result = result.replaceAll("o", "о");
+        result = result.replaceAll("y", "у");
+        result = result.replaceAll("p", "р");
+        result = result.replaceAll("k", "к");
+        result = result.replaceAll("c", "с");
+        result = result.replaceAll("x", "х");
+        result = result.replaceAll("e", "е");
+        return result;
+    }
+
+    private void checkSameMessages(String msg) {
+        if( !this.sameMessages.containsKey(msg) ) this.sameMessages.put(msg, new SameMessages());
+        SameMessages sm = this.sameMessages.get(msg);
+        boolean check = sm.addTimes(System.currentTimeMillis(), 3, 420000);
+        if(sm.times.size() > 1) System.out.println("⚠ Одинаковые сообщения!");
+        if(check) {
+            this.isViolation = true;
+            this.violationMsg = "2.3 Флуд";
+            this.violationInstantMinutes = 20;
+        }
+        if(this.sameMessages.size() > 50) {
+            this.sameMessages.clear();
+            this.sameMessages.put(msg, sm);
+        }
     }
 
     private void writeToCharacterFludDetector(String msg){
@@ -143,7 +184,7 @@ public class PlayerData {
     }
 
     public void checkBadWords(String newMsg) {
-        String lower = newMsg.toLowerCase();
+        String lower = makeSimple(newMsg);
         for(String bad : badWords.keySet()) {
             if(lower.contains(bad)) {
                 Badword badword = badWords.get(bad);

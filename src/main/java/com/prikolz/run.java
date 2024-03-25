@@ -148,6 +148,23 @@ public class run {
                 return;
             }
 
+            if(id.equals("data")) {
+                if(args.length < 2) {
+                    System.out.println("Usage: >data [name]");
+                    return;
+                }
+
+                if(automod.data.containsKey(args[1])) {
+                    System.out.println(args[1] + " DATA:");
+                    System.out.println( automod.data.get(args[1]).toString() );
+                    return;
+                }
+
+                System.out.println("no player");
+
+                return;
+            }
+
             System.out.println("Unknown console command");
 
             return;
