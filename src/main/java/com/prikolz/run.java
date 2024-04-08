@@ -15,6 +15,7 @@ public class run {
     private static final int PORT = 25565;
     private static final String NICKNAME = "2M3V";
     public static final File DATABASE = new File("C:/Users/Сыр/Desktop/кринжМС/jmcmod.txt");
+    public static boolean stopBuffer = false;
 
     public static void main(String[] args) {
 
@@ -150,7 +151,18 @@ public class run {
 
             if(id.equals("data")) {
                 if(args.length < 2) {
-                    System.out.println("Usage: >data [name]");
+                    System.out.println("Usage: >data [name]/all");
+                    return;
+                }
+
+                if(args[1].equals("all")) {
+                    System.out.println(" |-----------------------| ");
+                    for(String player : automod.data.keySet()) {
+                        System.out.println("  ");
+                        System.out.println(player + " DATA:");
+                        System.out.println( automod.data.get(player).toString() );
+                    }
+                    System.out.println(" |-----------------------| ");
                     return;
                 }
 
@@ -165,21 +177,38 @@ public class run {
                 return;
             }
 
+            if(id.equals("buffer")) {
+                if(args.length < 2) {
+                    System.out.println("Usage: >buffer [on - 1/off - 0/clear - c]");
+                    return;
+                }
+
+                if(args[1].equals("1")) {
+                    run.stopBuffer = false;
+                    System.out.println("Command buffer ON");
+                    return;
+                }
+                if(args[1].equals("0")) {
+                    run.stopBuffer = true;
+                    System.out.println("Command buffer OFF");
+                    return;
+                }
+                if(args[1].equals("c")) {
+                    run.stopBuffer = true;
+                    automod.commandBuffer.clear();
+                    System.out.println("Command buffer CLEARED");
+                    return;
+                }
+
+                return;
+            }
+
             System.out.println("Unknown console command");
 
             return;
         }
         if (command.startsWith("/")) {
-            List<ArgumentSignature> signs = new ArrayList<>();
-            client.session.send(new ServerboundChatCommandPacket(
-                    command.substring(1),
-                    System.currentTimeMillis(),
-                    0L,
-                    signs,
-                    0,
-                    new BitSet()
-                    )
-            );
+            automod.sendCommand( command.substring(1) );
             return;
         }
         client.session.send(new ServerboundChatPacket(command, System.currentTimeMillis(), 0L, null, 0, new BitSet()));

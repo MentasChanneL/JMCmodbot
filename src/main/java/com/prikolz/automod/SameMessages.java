@@ -21,6 +21,6 @@ public class SameMessages {
 
     @Override
     public String toString() {
-        return "times = " + times;
+        return "(times = " + times + ")";
     }
 }

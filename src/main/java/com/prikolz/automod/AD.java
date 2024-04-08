@@ -13,6 +13,6 @@ public class AD {
 
     @Override
     public String toString() {
-        return "times =" + time;
+        return "AD(times =" + time + ")";
     }
 }

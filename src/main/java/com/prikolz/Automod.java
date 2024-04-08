@@ -146,6 +146,7 @@ public class Automod {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
+                    if(run.stopBuffer) return;
                     if(commandBufferCD > System.currentTimeMillis()) return;
                     String command = commandBuffer.getFirst();
                     List<ArgumentSignature> signs = new ArrayList<>();

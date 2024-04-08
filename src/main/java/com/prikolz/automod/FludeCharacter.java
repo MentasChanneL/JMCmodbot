@@ -19,6 +19,6 @@ public class FludeCharacter {
 
     @Override
     public String toString() {
-        return "char = " + character + " power = " + power + " time = " + time;
+        return "(char = '" + character + "' power = " + power + " time = " + time + ")";
     }
 }

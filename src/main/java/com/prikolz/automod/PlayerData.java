@@ -44,6 +44,8 @@ public class PlayerData {
         badWords.put(" пашел нахуй", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пашёл нахуй", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пошёл нахуй", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пошёл на*", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" иди на*", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" иди нах", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбаеб ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" долбаёб ", new Badword("2.1 Неадекватное поведение", 40));
@@ -91,7 +93,7 @@ public class PlayerData {
         writeToCharacterFludDetector(newMsg);
     }
 
-    private String makeSimple(String text) {
+    public static String makeSimple(String text) {
         String result = text.toLowerCase();
         result = result.replaceAll("a", "а");
         result = result.replaceAll("o", "о");
