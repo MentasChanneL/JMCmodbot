@@ -63,8 +63,9 @@ public class Client {
 
                 if (packet instanceof ClientboundSystemChatPacket pm) {
                     String message = PlainTextComponentSerializer.plainText().serialize(pm.getContent());
-                    System.out.println( ANSIComponentSerializer.ansi().serialize(pm.getContent()) );
-                    DSUtils.sendChatMessage(message);
+                    String ansii = ANSIComponentSerializer.ansi().serialize(pm.getContent());
+                    System.out.println( ansii );
+                    DSUtils.sendChatMessage( ansii );
                     if(message.startsWith("[!]")) {
                         automod.mod(message);
                         return;

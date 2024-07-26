@@ -1,5 +1,7 @@
 package com.prikolz.automod;
 
+import com.prikolz.ds.DSUtils;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -14,6 +16,7 @@ public class PlayerData {
     public boolean isViolation;
     public String violationMsg;
     public int violationInstantMinutes;
+    public String[] violationData;
     public static HashMap<String, Badword> badWords;
     public HashMap<String, SameMessages> sameMessages;
 
@@ -24,6 +27,7 @@ public class PlayerData {
         badWords = new HashMap<>();
         fludSameCharacters = new ArrayList<>();
         sameMessages = new HashMap<>();
+        violationData = new String[0];
         setBadWords();
     }
 
@@ -117,6 +121,12 @@ public class PlayerData {
             this.isViolation = true;
             this.violationMsg = "2.3 Флуд";
             this.violationInstantMinutes = 20;
+            this.violationData = new String[sm.times.size()];
+            int i = 0;
+            for(long time : sm.times) {
+                this.violationData[i] = DSUtils.unixToTime("HH:mm", time);
+                i++;
+            }
         }
         if(this.sameMessages.size() > 50) {
             this.sameMessages.clear();
@@ -171,6 +181,12 @@ public class PlayerData {
                         isViolation = true;
                         violationMsg = "2.3 Спам";
                         violationInstantMinutes = 15;
+                        this.violationData = new String[ad.time.size()];
+                        int i = 0;
+                        for(long t2 : ad.time) {
+                            this.violationData[i] = DSUtils.unixToTime("HH:mm", t2);
+                            i++;
+                        }
                         ad.time.clear();
                     }
                 }
@@ -195,6 +211,7 @@ public class PlayerData {
                 isViolation = true;
                 violationMsg = badword.comment;
                 violationInstantMinutes = badword.initialMinutes;
+                violationData = new String[]{bad};
             }
         }
     }
@@ -221,6 +238,10 @@ public class PlayerData {
             isViolation = true;
             violationMsg = "2.3 Флуд";
             violationInstantMinutes = 10;
+            violationData = new String[3];
+            violationData[0] = "Время: " + DSUtils.unixToTime("HH:mm", current.time) + " Символ: " + current.character + " Заполненность: " + current.power;
+            violationData[1] = "Время: " + DSUtils.unixToTime("HH:mm", second.time) + " Символ: " + second.character + " Заполненность: " + second.power;
+            violationData[2] = "Время: " + DSUtils.unixToTime("HH:mm", first.time) + " Символ: " + first.character + " Заполненность: " + first.power;
         }
     }
 }

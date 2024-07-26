@@ -2,9 +2,11 @@ package com.prikolz;
 
 import com.github.steveice10.mc.protocol.data.game.ArgumentSignature;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import com.github.steveice10.packetlib.Session;
 import com.prikolz.automod.BotChecker;
 import com.prikolz.automod.PlayerData;
+import com.prikolz.ds.DSUtils;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -52,7 +54,7 @@ public class Automod {
         messages.analyseMessage(msg);
         if(messages.isViolation) {
             messages.isViolation = false;
-            mute(name, messages.violationMsg, messages.violationInstantMinutes, true);
+            mute(name, messages.violationMsg, messages.violationInstantMinutes, true, messages.violationData);
         }
         this.data.put(name, messages);
     }
@@ -78,7 +80,7 @@ public class Automod {
 
     }
 
-    public void mute(String name, String reason, int instanceMinutes, boolean pardon) {
+    public void mute(String name, String reason, int instanceMinutes, boolean pardon, String[] data) {
         int v = 0;
         if(!(violations.containsKey(name))) {
             violations.put(name, 1);
@@ -87,6 +89,7 @@ public class Automod {
             violations.put(name, v + 1);
         }
         int minutes = (int) (instanceMinutes * Math.pow(2, v));
+        DSUtils.sendInfo(false, name, reason, minutes, data);
         String command = "mute " + name + " " + minutes + "m [ᴀᴜᴛᴏᴍᴏᴅ] " + reason;
         System.out.println("⚠⚠⚠ Автоматический мут " + name + "! Команда: " + command);
         sendCommand(command);
@@ -125,7 +128,7 @@ public class Automod {
         }
         if(bot.targets.size() > 4) {
             for(String victim : bot.targets.keySet()) {
-                mute(victim, "2.3 Участие в флуде", 20, false);
+                mute(victim, "2.3 Участие в флуде", 20, false, new String[]{ DSUtils.unixToTime("HH:mm", bot.targets.get(victim)) });
             }
             botChecker.remove(msg);
         }
@@ -169,6 +172,17 @@ public class Automod {
                 }
             }, 0, 700);
         }
+    }
+
+    public void sendMessage(String message) {
+        run.client.session.send(new ServerboundChatPacket(
+                message,
+                System.currentTimeMillis(),
+                0L,
+                null,
+                0,
+                new BitSet()
+        ));
     }
 
 }

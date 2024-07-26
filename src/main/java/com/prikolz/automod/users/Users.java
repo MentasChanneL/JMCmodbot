@@ -1,6 +1,7 @@
 package com.prikolz.automod.users;
 
 import com.prikolz.run;
+import net.dv8tion.jda.api.entities.User;
 
 public class Users {
     public static boolean isOpen = true;
@@ -12,20 +13,31 @@ public class Users {
         if(!isOpen) return false;
         Users.isOpen = false;
         Users.target = target; Users.run = run;
+        data = new UserData();
         com.prikolz.run.automod.sendCommand("users get-info " + target);
         return true;
     }
 
     public static void grabMessage(String message) {
+        if(message.startsWith("command.expected.separator\n... get-info")) {
+            data.ERRORS = new String[]{"not_found"};
+            isOpen = true;
+            Users.run.run();
+            return;
+        }
+        if(message.startsWith("Users » Пользователь") && message.endsWith("не найден.")) {
+            data.ERRORS = new String[]{"not_found"};
+            isOpen = true;
+            Users.run.run();
+            return;
+        }
         if(message.contains("┌──────── Информация об пользователе")) {
-            data = new UserData();
             String[] lines = message.split("\n");
             for (String line : lines) {
                 analysMessage(line);
             }
             isOpen = true;
             Users.run.run();
-            System.out.println(" end ");
         }
     }
 

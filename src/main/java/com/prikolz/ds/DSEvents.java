@@ -19,6 +19,15 @@ public class DSEvents implements EventListener {
         if(!(e instanceof MessageReceivedEvent event)) return;
         if(!event.getChannel().getId().equals(DSBotConfig.chatChannel)) return;
         if(event.getAuthor().getId().equals("1185977384323792967")) return;
+        String content = event.getMessage().getContentRaw();
+        if(content.startsWith("\\")) {
+            run.automod.sendCommand(content.substring(1));
+            return;
+        }
+        if(content.startsWith("!")) {
+            run.automod.sendMessage("[ᴅꜱ] " + content.substring(1));
+            return;
+        }
     }
 
     private static void HttpRequestEvent(GenericEvent e) {

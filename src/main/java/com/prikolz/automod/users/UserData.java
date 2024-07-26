@@ -6,6 +6,6 @@ public class UserData {
     public String Roles = "";
     public int sessions = 1;
     public String IP = "";
-    public String[] ERRORS = new String[5];
+    public String[] ERRORS = new String[]{""};
 
 }
