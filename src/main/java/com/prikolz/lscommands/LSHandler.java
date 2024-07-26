@@ -1,6 +1,7 @@
 package com.prikolz.lscommands;
 
 import com.prikolz.DisplayNick;
+import com.prikolz.automod.CheckCheater;
 import com.prikolz.automod.PlayerData;
 import com.prikolz.run;
 
@@ -22,7 +23,18 @@ public class LSHandler {
     public static void analys(String msg) {
         DisplayNick displayNick = new DisplayNick();
         displayNick.fromPrivateMessage(msg);
-        String command = PlayerData.makeSimple(displayNick.message);
+        String command = displayNick.message;
+        String lowerCommand = displayNick.message.toLowerCase();
+
+        if(lowerCommand.startsWith("чит"))  {
+            cheaterReport(displayNick);
+            return;
+        }
+        command = PlayerData.makeSimple(displayNick.message);
+        if(command.contains("чит"))  {
+            say(displayNick.name, "ℹ Если вы хотите зарепортить читера, отправьте мне сообщение в подобном формате: чит НИК, Читер НИК, читак НИК и т.д.");
+            return;
+        }
 
         if(command.equals("анекдот"))  {
             sayPrikol(displayNick);
@@ -58,6 +70,11 @@ public class LSHandler {
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
         }
+        if(command.contains("можно"))  {
+            String[] phrases = new String[]{"нельзя", "можно"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
         if(command.contains("скажи"))  {
             String[] phrases = new String[]{"не скажу", "не", "не хочу говорить"};
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
@@ -83,8 +100,23 @@ public class LSHandler {
             say(displayNick.name, "репис");
             return;
         }
+        if(command.startsWith("что такое"))  {
+            String[] phrases = new String[]{"это я не понмню", "не знаю", "спросите у другого", "да не знаю"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
         if(command.contains("зайди"))  {
             String[] phrases = new String[]{"не зайду", "зачем", "не хочу"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
+        if(command.contains("как дела"))  {
+            String[] phrases = new String[]{"с делами хорошо", "хорошо", "отлично", "нормально", "а у тебя как дела?"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
+        if(command.contains("крутой"))  {
+            String[] phrases = new String[]{"крутой", "крут", "не крутой", "крутышка", "не крутец"};
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
         }
@@ -118,6 +150,16 @@ public class LSHandler {
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
         }
+        if(command.contains("как"))  {
+            String[] phrases = new String[]{"никак", "както", "как"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
+        if(command.contains("когда"))  {
+            String[] phrases = new String[]{"никогда", "когда-то", "когда раки свиснут"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
         if(command.contains("ты ") || command.startsWith("ти "))  {
             String[] phrases = new String[]{"нет", "я нет"};
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
@@ -128,7 +170,7 @@ public class LSHandler {
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
         }
-        if(command.contains("2м3в") || command.startsWith("2м3v"))  {
+        if(command.contains("2м3в") || command.startsWith("2м3v") || command.startsWith("двамтрив"))  {
             String[] phrases = new String[]{"что надо", "чего надо", "что хотел", "это не я"};
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
@@ -152,7 +194,17 @@ public class LSHandler {
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
         }
-        if(command.startsWith("прив") || command.startsWith("ку") || command.startsWith("q") || command.startsWith("здра"))  {
+        if(command.contains("туда"))  {
+            String[] phrases = new String[]{"куда", "куда туда", "туда", "сюда"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
+        if(command.contains("зовут"))  {
+            String[] phrases = new String[]{"кого зовут", "куда зовут", "никак не зовут", "тебя зовут"};
+            say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
+            return;
+        }
+        if(command.startsWith("прив") || command.startsWith("ку") || command.startsWith("q") || command.startsWith("здра") || command.startsWith("йй"))  {
             String[] phrases = new String[]{"ку", "здравствуйте", "привет", "приветствую"};
             say(displayNick.name, phrases[new Random().nextInt(phrases.length)]);
             return;
@@ -163,7 +215,7 @@ public class LSHandler {
             return;
         }
 
-        List<String> what = Arrays.asList("понял", "что", "чего", "каво", "ладно", "не пон", "всм", "я бот", "окей", "нет", "круто", "ихихи");
+        List<String> what = Arrays.asList("ты что тупой", "понял", "ладно", "я бот", "окей", "нет", "да", "круто", "глупый " + displayNick.name + " говорит " + command);
 
         say( displayNick.name, what.get( new Random().nextInt(what.size()) ));
 
@@ -199,7 +251,21 @@ public class LSHandler {
         }
     }
 
-    private static void say(String getter, String content) {
+    private static void cheaterReport(DisplayNick displayNick) {
+        String[] args = displayNick.message.split(" ");
+        if(args.length < 2) {
+            say(displayNick.name, "ℹ Если вы хотите зарепортить читера, отправьте мне сообщение в подобном формате: чит НИК, Читер НИК, читак НИК и т.д.");
+            return;
+        }
+        boolean s = CheckCheater.addRequest(displayNick.name, args[1]);
+        if(!s) {
+            say(displayNick.name, "❌ Запрос не выполнен. Возможно, на этого игрока уже есть репорт. Повторите попытку через минуту.");
+            return;
+        }
+        say(displayNick.name, "⌚ Выполняю ваш запрос: репорт читера с ником " + args[1] + " ...");
+    }
+
+    public static void say(String getter, String content) {
         run.automod.sendCommand("msg " + getter + " " + content);
     }
 

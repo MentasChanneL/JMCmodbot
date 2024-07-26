@@ -1,8 +1,11 @@
 package com.prikolz;
 
-import com.github.steveice10.mc.protocol.data.game.ArgumentSignature;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
+import com.prikolz.automod.CheckCheater;
+import com.prikolz.ds.DSEvents;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import java.io.File;
 import java.util.*;
@@ -12,12 +15,15 @@ public class run {
     public static Client client;
 
     private static final String IP = "137.74.4.178";
+    //private static final String IP = "localhost";
     private static final int PORT = 25565;
     private static final String NICKNAME = "2M3V";
     public static final File DATABASE = new File("C:/Users/Сыр/Desktop/кринжМС/jmcmod.txt");
     public static boolean stopBuffer = false;
+    public static boolean enableLS = true;
+    public static JDA dsBot;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Scanner scanner = new Scanner(System.in);
 
@@ -44,6 +50,13 @@ public class run {
         System.out.println(">pardon [nickname] - unmute player");
         System.out.println(">commands {number} - commands list from server");
         System.out.println(">tab {number} - players list\n");
+        System.out.println(">reports - cheaters reports list\n");
+
+        dsBot = JDABuilder.createDefault("")
+                .addEventListeners( new DSEvents() )
+                .enableIntents( GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS) )
+                .build();
+        dsBot.awaitReady();
 
         client = new Client(IP, PORT, NICKNAME);
         automod = new Automod(client.session);
@@ -199,6 +212,13 @@ public class run {
                     System.out.println("Command buffer CLEARED");
                     return;
                 }
+
+                return;
+            }
+
+            if(id.equals("reports")) {
+
+                System.out.println("Текущие репорты: " + CheckCheater.reports);
 
                 return;
             }

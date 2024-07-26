@@ -8,12 +8,13 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundCo
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundSystemChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.scoreboard.ClientboundSetPlayerTeamPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpClientSession;
+import com.prikolz.automod.users.Users;
+import com.prikolz.ds.DSUtils;
 import com.prikolz.lscommands.LSHandler;
 import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -63,11 +64,18 @@ public class Client {
                 if (packet instanceof ClientboundSystemChatPacket pm) {
                     String message = PlainTextComponentSerializer.plainText().serialize(pm.getContent());
                     System.out.println( ANSIComponentSerializer.ansi().serialize(pm.getContent()) );
+                    DSUtils.sendChatMessage(message);
                     if(message.startsWith("[!]")) {
                         automod.mod(message);
+                        return;
                     }
-                    if(message.startsWith("(") && !(message.startsWith("(Ты"))) {
+                    if(run.enableLS && message.startsWith("(") && !(message.startsWith("(Ты"))) {
                         LSHandler.analys(message);
+                        return;
+                    }
+                    if(!Users.isOpen) {
+                        Users.grabMessage(message);
+                        return;
                     }
                     return;
                 }

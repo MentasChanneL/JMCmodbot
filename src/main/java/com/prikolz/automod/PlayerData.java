@@ -38,6 +38,8 @@ public class PlayerData {
         badWords.put(" пидор ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пидарас ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пидорас ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пидорасы ", new Badword("2.1 Неадекватное поведение", 40));
+        badWords.put(" пидоры ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" гандон ", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пошел нахуй", new Badword("2.1 Неадекватное поведение", 40));
         badWords.put(" пошол нахуй", new Badword("2.1 Неадекватное поведение", 40));
@@ -109,7 +111,7 @@ public class PlayerData {
     private void checkSameMessages(String msg) {
         if( !this.sameMessages.containsKey(msg) ) this.sameMessages.put(msg, new SameMessages());
         SameMessages sm = this.sameMessages.get(msg);
-        boolean check = sm.addTimes(System.currentTimeMillis(), 3, 420000);
+        boolean check = sm.addTimes(System.currentTimeMillis(), 4, 420000);
         if(sm.times.size() > 1) System.out.println("⚠ Одинаковые сообщения!");
         if(check) {
             this.isViolation = true;
@@ -160,12 +162,12 @@ public class PlayerData {
                 AD ad = ADs.get(adID);
                 int counter = 0;
                 for(long t : ad.time.stream().toList()) {
-                    if(time - t < 900000) {
+                    if(time - t < 1800000) {
                         counter++;
                     }else {
                         ad.time.remove(t);
                     }
-                    if(counter > 1) {
+                    if(counter > 2) {
                         isViolation = true;
                         violationMsg = "2.3 Спам";
                         violationInstantMinutes = 15;
@@ -174,12 +176,12 @@ public class PlayerData {
                 }
                 if(!isViolation) ad.time.add(time);
                 ADs.put(adID, ad);
-                System.out.println(format + " \uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/2");
+                System.out.println(format + " \uD83D\uDC41 AD| " + adID + " | " + (counter + 1) + "/3");
 
             }else {
                 AD ad = new AD(time);
                 ADs.put(adID, ad);
-                System.out.println(format + " \uD83D\uDC41 AD| + " + adID + " | 1/2");
+                System.out.println(format + " \uD83D\uDC41 AD| + " + adID + " | 1/3");
             }
             index = cut.indexOf("/join ");
         }
